@@ -7,10 +7,10 @@
 <meta name="theme-color" content="#E8A33D" />
 <meta name="description" content="منصتك الشخصية لجميع روابطك وأدواتك المفضلة" />
 
-<!-- ربط Manifest مدمج مباشرة لضمان التثبيت على المتصفح -->
-<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22%D9%84%D9%88%D8%AD%D8%AA%D9%8A%20-%20%D8%A8%D8%B1%D8%AC%20%D8%A7%D9%84%D8%AA%D8%AD%D9%83%D9%85%22%2C%22short_name%22%3A%22%D9%84%D9%88%D8%AD%D8%AA%D9%8A%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230E1116%22%2C%22theme_color%22%3A%22%23E8A33D%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20512%20512%27%253E%253Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27128%27%20fill%3D%27%2523E8A33D%27%2F%253E%253Cpath%20d%3D%27M256%20120L120%20196l136%2076%20136-76-136-76zM120%20316l136%2076%20136-76M120%20256l136%2076%20136-76%27%20stroke%3D%27%2523161B22%27%20stroke-width%3D%2736%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20fill%3D%27none%27%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%7D%5D%7D">
+<!-- ربط Manifest مدمج يحتوي على أيقونات PNG و SVG عالية الجودة باللون البرتقالي/الذهبي -->
+<link rel="manifest" href="data:application/json;charset=utf-8,%7B%22name%22%3A%22%D9%84%D9%88%D8%AD%D8%AA%D9%8A%20-%20%D8%A8%D8%B1%D8%AC%20%D8%A7%D9%84%D8%AA%D8%AD%D9%83%D9%85%22%2C%22short_name%22%3A%22%D9%84%D9%88%D8%AD%D8%AA%D9%8A%22%2C%22start_url%22%3A%22.%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230E1116%22%2C%22theme_color%22%3A%22%23E8A33D%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22data%3Aimage%2Fsvg%2Bxml%2C%253Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20512%20512%27%253E%253Crect%20width%3D%27512%27%20height%3D%27512%27%20rx%3D%27128%27%20fill%3D%27%2523E8A33D%27%2F%253E%253Cpath%20d%3D%27M256%20120L120%20196l136%2076%20136-76-136-76zM120%20316l136%2076%20136-76M120%20256l136%2076%20136-76%27%20stroke%3D%27%2523161B22%27%20stroke-width%3D%2736%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%20fill%3D%27none%27%2F%253E%253C%2Fsvg%253E%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fsvg%2Bxml%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
 
-<!-- أيقونة أصلية باللون الأصفر المشرق -->
+<!-- أيقونات المتصفح والأجهزة -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23E8A33D'/><path d='M256 120L120 196l136 76 136-76-136-76zM120 316l136 76 136-76M120 256l136 76 136-76' stroke='%23161B22' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23E8A33D'/><path d='M256 120L120 196l136 76 136-76-136-76zM120 316l136 76 136-76M120 256l136 76 136-76' stroke='%23161B22' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
 
@@ -221,7 +221,11 @@
   <div class="wrap">
     <div class="top-row">
       <div class="brand">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9c3.9 3.9 3.9 10.3 0 14.2"/></svg>
+        <!-- شعار أعلى الصفحة باللون الأصفر المميز -->
+        <svg width="22" height="22" viewBox="0 0 512 512" fill="none">
+          <rect width="512" height="512" rx="128" fill="#E8A33D"/>
+          <path d="M256 120L120 196l136 76 136-76-136-76zM120 316l136 76 136-76M120 256l136 76 136-76" stroke="#161B22" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
         <span class="mono">برج التحكم</span>
         <span class="brand-badge"><span class="status-dot"></span> PWA جاهز</span>
       </div>
