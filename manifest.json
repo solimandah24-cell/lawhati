@@ -1,16 +1,20 @@
 {
   "name": "لوحتي - برج التحكم",
   "short_name": "لوحتي",
-  "description": "منصتك الشخصية لجميع روابطك وأدواتك المفضلة",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#0E1116",
-  "theme_color": "#0E1116",
-  "orientation": "any",
+  "theme_color": "#E8A33D",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/1006/1006771.png",
-      "sizes": "192x192 512x512",
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
