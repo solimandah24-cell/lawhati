@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>لوحتي - تطبيق سطح المكتب</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23E8A33D'><path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5'/></svg>">
+<meta name="theme-color" content="#0E1116">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="لوحتي">
+
+<!-- Dynamic Inline Web Manifest for PWA Support -->
+<script id="manifest-placeholder"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root[data-theme="dark"] {
+    --base: #0E1116;
+    --panel: #161B22;
+    --panel-hover: #1C222B;
+    --border: #262D38;
+    --border-strong: #333C49;
+    --text: #E9ECF1;
+    --muted: #8B93A3;
+    --accent: #E8A33D;
+    --accent-hover: #d9912b;
+    --accent2: #3FA796;
+    --danger: #D96C6C;
+    --badge-bg: rgba(63, 167, 150, 0.15);
+    --input-bg: #0E1116;
+    --shadow: rgba(0, 0, 0, 0.4);
+  }
+
+  :root[data-theme="light"] {
+    --base: #F4F6F9;
+    --panel: #FFFFFF;
+    --panel-hover: #F8FAFC;
+    --border: #E2E8F0;
+    --border-strong: #CBD5E1;
+    --text: #0F172A;
+    --muted: #64748B;
+    --accent: #D97706;
+    --accent-hover: #B45309;
+    --accent2: #0D9488;
+    --danger: #EF4444;
+    --badge-bg: rgba(13, 148, 136, 0.1);
+    --input-bg: #F8FAFC;
+    --shadow: rgba(0, 0, 0, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--base);
+    color: var(--text);
+    font-family: 'Tajawal', system-ui, sans-serif;
+    min-height: 100vh;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .wrap { max-width: 1020px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  .top-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:12px; flex-wrap:wrap; }
+  .brand { display:flex; align-items:center; gap:10px; color: var(--muted); font-size:13px; letter-spacing:.3px; }
+  .brand svg { display:block; }
+
+  .pwa-badge {
+    background: var(--badge-bg);
+    color: var(--accent2);
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(63, 167, 150, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+  }
+
+  .top-actions { display: flex; align-items: center; gap: 8px; }
+
+  /* Desktop App Install Button with Screen+Down Arrow Icon matching user request */
+  .btn-install-desktop {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0284c7;
+    color: #ffffff;
+    border: 1px solid #38bdf8;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+    transition: all 0.2s ease;
+    animation: pulse 2s infinite;
+  }
+  .btn-install-desktop:hover {
+    background: #0369a1;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+  }
+
+  .btn-icon-toggle {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 8px;
+    padding: 6px 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-icon-toggle:hover { background: var(--panel-hover); border-color: var(--border-strong); }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+    70% { box-shadow: 0 0 0 8px rgba(56, 189, 248, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+  }
+
+  h1 { font-size:30px; font-weight:800; margin:4px 0 6px; line-height:1.25; }
+  .sub { color: var(--muted); font-size:14px; margin:0 0 20px; max-width:620px; line-height: 1.6; }
+
+  .controls { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; align-items:center; }
+  .search-box {
+    flex:1 1 240px; display:flex; align-items:center; gap:8px;
+    background: var(--panel); border:1px solid var(--border); border-radius:10px; padding:8px 14px;
+    transition: border-color 0.2s ease;
+  }
+  .search-box:focus-within { border-color: var(--accent); }
+  .search-box input {
+    background:transparent; border:none; color:var(--text); font-size:14px; width:100%;
+    font-family:inherit;
+  }
+  .search-box input:focus { outline:none; }
+  .shortcut-tag {
+    background: var(--base); border: 1px solid var(--border); border-radius: 4px;
+    font-size: 11px; padding: 1px 5px; color: var(--muted);
+  }
+
+  button { font-family:inherit; cursor:pointer; transition: all 0.2s ease; }
+  
+  .btn-action {
+    display:flex; align-items:center; gap:8px;
+    border-radius:10px; padding:9px 14px; font-size:13px; font-weight:700;
+    border: 1px solid transparent;
+  }
+
+  .btn-help { background: var(--panel); color: var(--muted); border-color: var(--border); }
+  .btn-help:hover { color: var(--text); border-color: var(--border-strong); }
+
+  .btn-add { background: var(--accent); color:#14171C; border-color: var(--accent); }
+  .btn-add:hover { background: var(--accent-hover); }
+  .btn-add.active { background: var(--panel); color: var(--text); border-color: var(--border); }
+  
+  /* Category Tabs Bar */
+  .cat-bar { display:flex; gap:6px; overflow-x:auto; padding-bottom:8px; margin-bottom:20px; scrollbar-width:none; }
+  .cat-bar::-webkit-scrollbar { display:none; }
+  .cat-chip {
+    background: var(--panel); border: 1px solid var(--border); color: var(--muted);
+    padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+    white-space: nowrap; cursor: pointer; transition: all 0.15s ease;
+  }
+  .cat-chip:hover { border-color: var(--border-strong); color: var(--text); }
+  .cat-chip.active { background: var(--accent); color: #14171C; border-color: var(--accent); }
+
+  form.add-form {
+    display:none; gap:10px; flex-wrap:wrap;
+    background: var(--panel); border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:20px;
+    animation: fadeIn 0.2s ease-out;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+  form.add-form.open { display:flex; }
+  form.add-form input, form.add-form select {
+    background: var(--input-bg); border:1px solid var(--border); border-radius:8px;
+    padding:10px 12px; color:var(--text); font-size:14px; font-family:inherit;
+  }
+  form.add-form input:focus, form.add-form select:focus { outline:none; border-color:var(--accent); }
+  #f-name { flex:1 1 180px; }
+  #f-url { flex:1 1 220px; direction:ltr; text-align:left; }
+  #f-cat { flex:1 1 140px; }
+  
+  .save-btn {
+    background: var(--accent2); color:#0E1116; border:none; border-radius:8px;
+    padding:10px 20px; font-size:14px; font-weight:700;
+  }
+  .save-btn:hover { opacity: 0.9; }
+  .form-error { width:100%; color: var(--danger); font-size:13px; }
+
+  .grid {
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap:12px;
+  }
+  .empty {
+    border:1px dashed var(--border); border-radius:12px; padding:40px 20px;
+    text-align:center; color:var(--muted); font-size:14px; grid-column: 1 / -1;
+  }
+  .card {
+    display:block; position:relative;
+    background: var(--panel); border:1px solid var(--border); border-right:3px solid var(--accent2);
+    border-radius:10px; padding:14px 12px; text-decoration:none; color:var(--text);
+    transition: border-color 120ms ease, background-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    box-shadow: 0 2px 5px var(--shadow);
+  }
+  .card:hover { border-color: var(--border-strong); background-color: var(--panel-hover); transform: translateY(-2px); }
+  .card-head { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .card-head img { border-radius:6px; flex-shrink:0; background: #fff; padding: 2px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+  .card-name { font-size:14px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; flex:1; }
+  .card-domain { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--muted); direction:ltr; margin-bottom: 6px; }
+  .card-domain span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  .card-cat-badge {
+    font-size: 10px; background: var(--base); border: 1px solid var(--border);
+    color: var(--muted); padding: 2px 6px; border-radius: 4px; display: inline-block;
+  }
+
+  .card-actions {
+    position:absolute; top:8px; left:8px; opacity:0; transition:opacity 120ms ease; display:flex; gap:4px;
+  }
+  .card:hover .card-actions { opacity:1; }
+
+  .card-act-btn {
+    background: var(--base); border:1px solid var(--border); border-radius:5px;
+    width:24px; height:24px; display:flex; align-items:center; justify-content:center; color:var(--muted);
+  }
+  .card-act-btn.del:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .card-act-btn.edit:hover { background: var(--accent); color: #14171C; border-color: var(--accent); }
+
+  .footer { margin-top:32px; font-size:12px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .footer-links { display:flex; gap:12px; }
+  .footer-link { color:var(--muted); text-decoration:none; cursor:pointer; }
+  .footer-link:hover { color:var(--text); text-decoration:underline; }
+
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
+  }
+  .modal-overlay.active { opacity: 1; pointer-events: auto; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--border-strong);
+    border-radius: 16px; padding: 24px; max-width: 480px; width: 90%;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+  }
+  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .modal-body { font-size: 13px; color: var(--muted); line-height: 1.6; }
+  .modal-body ol { padding-right: 20px; margin: 10px 0; }
+  .modal-body li { margin-bottom: 6px; }
+  .modal-footer { margin-top: 18px; display: flex; justify-content: flex-end; gap: 8px; }
+  .btn-close {
+    background: var(--border); color: var(--text); border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600;
+  }
+  .btn-close:hover { background: var(--border-strong); }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+  ::selection { background: var(--accent); color:#14171C; }
+</style>
+</head>
+<body>
+
+<script>
+  // Create and inject Dynamic PWA Web Manifest
+  const manifestObj = {
+    "name": "لوحتي - تطبيق سطح المكتب",
+    "short_name": "لوحتي",
+    "description": "منصة الروابط والتطبيقات السريعة الخاصة بك",
+    "start_url": "./",
+    "display": "standalone",
+    "background_color": "#0E1116",
+    "theme_color": "#0E1116",
+    "orientation": "any",
+    "icons": [
+      {
+        "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%230E1116'/><path d='M256 90L90 190l166 100 166-100-166-100zM90 322l166 100 166-100M90 256l166 100 166-100' fill='none' stroke='%23E8A33D' stroke-width='32' stroke-linecap='round' stroke-linejoin='round'/></svg>",
+        "sizes": "192x192 512x512",
+        "type": "image/svg+xml",
+        "purpose": "any maskable"
+      }
+    ]
+  };
+
+  const stringManifest = JSON.stringify(manifestObj);
+  const blob = new Blob([stringManifest], {type: 'application/json'});
+  const manifestURL = URL.createObjectURL(blob);
+  
+  const manifestLink = document.createElement('link');
+  manifestLink.rel = 'manifest';
+  manifestLink.href = manifestURL;
+  document.head.appendChild(manifestLink);
+
+  // Register inline Service Worker for full PWA compliance
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      const swCode = `
+        const CACHE_NAME = 'lawhati-pwa-v2';
+        self.addEventListener('install', (e) => self.skipWaiting());
+        self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+        self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+      `;
+      const swBlob = new Blob([swCode], { type: 'text/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(swBlob))
+        .then(() => console.log('SW Ready'))
+        .catch(err => console.error('SW Error:', err));
+    });
+  }
+</script>
+
+<div class="wrap">
+  <div class="top-row">
+    <div class="brand">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E8A33D" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9c3.9 3.9 3.9 10.3 0 14.2"/></svg>
+      <span class="mono" style="font-weight:700;">برج التحكم</span>
+      <span class="pwa-badge">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+        PWA جاهز
+      </span>
+    </div>
+
+    <div class="top-actions">
+      <!-- Desktop Install Button with Exact Icon Requested (Monitor + Down Arrow) -->
+      <button class="btn-install-desktop" id="btn-desktop-install" style="display:none;" title="تثبيت التطبيق على سطح المكتب">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- Monitor Frame -->
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+          <line x1="8" y1="21" x2="16" y2="21"></line>
+          <line x1="12" y1="17" x2="12" y2="21"></line>
+          <!-- Downward Arrow inside Monitor -->
+          <line x1="12" y1="6" x2="12" y2="12"></line>
+          <polyline points="9 10 12 13 15 10"></polyline>
+        </svg>
+        <span>تثبيت التطبيق</span>
+      </button>
+
+      <!-- Theme Switcher -->
+      <button class="btn-icon-toggle" id="btn-theme-toggle" title="تبديل المظهر">
+        <span id="theme-icon">🌙</span>
+        <span id="theme-text">الداكن</span>
+      </button>
+
+      <span class="mono" id="clock" style="font-size:13px;color:var(--muted); margin-right: 6px;"></span>
+    </div>
+  </div>
+
+  <h1>لوحتي</h1>
+  <p class="sub">منصتك الشخصية لجميع روابطك وأدواتك المفضلة، مصممة للتثبيت المباشر على سطح المكتب بدون شريط المتصفح.</p>
+
+  <div class="controls">
+    <div class="search-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8B93A3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="search" placeholder="ابحث عن موقع..." />
+      <span class="shortcut-tag">/</span>
+    </div>
+
+    <button class="btn-action btn-help" id="btn-open-launch" title="فتح جميع روابط التصنيف المحدد بتبويبات جديدة">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      <span>فتح الكل</span>
+    </button>
+
+    <button class="btn-action btn-help" id="btn-help-install">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <span>طريقة التثبيت</span>
+    </button>
+
+    <button class="btn-action btn-add" id="toggle-form">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      <span id="toggle-label">إضافة موقع</span>
+    </button>
+  </div>
+
+  <!-- Category Filter Bar -->
+  <div class="cat-bar" id="cat-bar"></div>
+
+  <form class="add-form" id="add-form">
+    <input id="f-id" type="hidden" />
+    <input id="f-name" placeholder="اسم الموقع (مثال: Notion)" required />
+    <input id="f-url" placeholder="الرابط (مثال: notion.so)" required />
+    <select id="f-cat">
+      <option value="الكل">عام</option>
+      <option value="ذكاء اصطناعي">ذكاء اصطناعي</option>
+      <option value="تطوير">تطوير وبرمجة</option>
+      <option value="تصميم">تصميم وأدوات</option>
+      <option value="تواصل">تواصل اجتماعي</option>
+      <option value="أعمال">أعمال ومالية</option>
+    </select>
+    <button type="submit" class="save-btn" id="f-submit-btn">حفظ</button>
+    <div class="form-error" id="form-error" style="display:none;"></div>
+  </form>
+
+  <div id="grid" class="grid"></div>
+
+  <div class="footer">
+    <span id="count"></span>
+    <div class="footer-links">
+      <span class="footer-link" id="btn-export">تصدير النسخة الاحتياطية (JSON)</span>
+      <span>•</span>
+      <label class="footer-link" for="import-file">استعادة نسخة احتياطية</label>
+      <input type="file" id="import-file" accept=".json" style="display:none;" />
+    </div>
+    <span class="mono" id="app-mode">وضع الويب</span>
+  </div>
+</div>
+
+<!-- Modal Dialog for Manual Desktop Installation -->
+<div class="modal-overlay" id="install-modal">
+  <div class="modal">
+    <div class="modal-title">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+        <line x1="8" y1="21" x2="16" y2="21"></line>
+        <line x1="12" y1="17" x2="12" y2="21"></line>
+        <line x1="12" y1="6" x2="12" y2="12"></line>
+        <polyline points="9 10 12 13 15 10"></polyline>
+      </svg>
+      تثبيت "لوحتي" على سطح المكتب
+    </div>
+    <div class="modal-body">
+      <p>يمكنك تثبيت هذا التطبيق مباشرة ليعمل كبرنامج مستقل على نظام التشغيل لديك (Windows / Mac / Android / iOS):</p>
+      <p><strong>💻 من متصفح الكمبيوتر (Chrome / Edge):</strong></p>
+      <ol>
+        <li>انقر على أيقونة التثبيت <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M12 6v6m-3-3l3 3 3-3"/></svg> الموجودة أعلى الشريط العلوي أو بشريط عنوان المتصفح.</li>
+        <li>أو افتح قائمة المتصفح (⋮) > اختر <strong>Save and share</strong> أو <strong>More Tools</strong> > ثم اختر <strong>Install Lawhati</strong> أو <strong>Create Shortcut</strong> (مع اختيار Open as window).</li>
+      </ol>
+      <p><strong>📱 من الجوال (iPhone / iPad / Android):</strong></p>
+      <ol>
+        <li>في آيفون (Safari): اضغط زر المشاركة <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> ثم اختر <strong>إضافة إلى الشاشة الرئيسية (Add to Home Screen)</strong>.</li>
+        <li>في أندرويد (Chrome): اضغط الخيارات (⋮) ثم اختر <strong>تثبيت التطبيق (Install App)</strong>.</li>
+      </ol>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-close" id="btn-close-modal">فهمت ذلك</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = "lawhati-links-v2";
+  const THEME_KEY = "lawhati-theme";
+
+  const DEFAULT_LINKS = [
+    { id: "claude", name: "Claude", url: "https://claude.ai", cat: "ذكاء اصطناعي" },
+    { id: "chatgpt", name: "ChatGPT", url: "https://chatgpt.com", cat: "ذكاء اصطناعي" },
+    { id: "gemini", name: "Gemini", url: "https://gemini.google.com", cat: "ذكاء اصطناعي" },
+    { id: "github", name: "GitHub", url: "https://github.com", cat: "تطوير" },
+    { id: "vercel", name: "Vercel", url: "https://vercel.com", cat: "تطوير" },
+    { id: "neon", name: "Neon Database", url: "https://neon.tech", cat: "تطوير" },
+    { id: "stripe", name: "Stripe", url: "https://stripe.com", cat: "أعمال" },
+    { id: "reve", name: "Reve App", url: "https://app.reve.com", cat: "تصميم" },
+    { id: "facebook", name: "فيسبوك", url: "https://facebook.com", cat: "تواصل" }
+  ];
+
+  function loadLinks() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) {}
+    return DEFAULT_LINKS.slice();
+  }
+
+  function saveLinks(links) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(links)); } catch (e) {}
+  }
+
+  let links = loadLinks();
+  let query = "";
+  let activeCategory = "الكل";
+  let deferredPrompt = null;
+
+  const themeToggleBtn = document.getElementById("btn-theme-toggle");
+  const themeIcon = document.getElementById("theme-icon");
+  const themeText = document.getElementById("theme-text");
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(THEME_KEY, theme);
+    if (theme === "dark") {
+      themeIcon.textContent = "🌙";
+      themeText.textContent = "الداكن";
+    } else {
+      themeIcon.textContent = "☀️";
+      themeText.textContent = "الفاتح";
+    }
+  }
+
+  const savedTheme = localStorage.getItem(THEME_KEY) || 
+    (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+  applyTheme(savedTheme);
+
+  themeToggleBtn.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme");
+    applyTheme(current === "dark" ? "light" : "dark");
+  });
+
+  function domainOf(url) {
+    try { return new URL(url).hostname.replace(/^www\./, ""); }
+    catch { return url; }
+  }
+
+  function normalizeUrl(raw) {
+    const t = raw.trim();
+    if (!t) return "";
+    if (/^https?:\/\//i.test(t)) return t;
+    return "https://" + t;
+  }
+
+  function getCategories() {
+    const cats = new Set(["الكل"]);
+    links.forEach(l => { if (l.cat) cats.add(l.cat); });
+    return Array.from(cats);
+  }
+
+  function renderCategories() {
+    const catBar = document.getElementById("cat-bar");
+    const categories = getCategories();
+    catBar.innerHTML = categories.map(cat => `
+      <div class="cat-chip ${cat === activeCategory ? 'active' : ''}" data-cat="${cat}">
+        ${cat}
+      </div>
+    `).join("");
+
+    catBar.querySelectorAll("[data-cat]").forEach(chip => {
+      chip.addEventListener("click", () => {
+        activeCategory = chip.getAttribute("data-cat");
+        renderCategories();
+        render();
+      });
+    });
+  }
+
+  function render() {
+    const grid = document.getElementById("grid");
+    const q = query.trim().toLowerCase();
+
+    const filtered = links.filter(l => {
+      const matchCat = activeCategory === "الكل" || l.cat === activeCategory;
+      const matchQuery = !q || l.name.toLowerCase().includes(q) || domainOf(l.url).toLowerCase().includes(q);
+      return matchCat && matchQuery;
+    });
+
+    document.getElementById("count").textContent = `${filtered.length} موقع (من إجمالي ${links.length})`;
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `<div class="empty">${links.length === 0 ? "لا يوجد مواقع بعد. أضف أول موقع من الزر أعلاه." : "لا توجد نتائج مطابقة لتصفيتك."}</div>`;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(link => `
+      <a class="card" href="${link.url}" target="_blank" rel="noopener noreferrer" data-id="${link.id}">
+        <div class="card-actions">
+          <button class="card-act-btn edit" data-edit="${link.id}" title="تعديل">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="card-act-btn del" data-del="${link.id}" title="حذف">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <div class="card-head">
+          <img src="https://www.google.com/s2/favicons?domain=${domainOf(link.url)}&sz=64" width="20" height="20" alt="" onerror="this.src='data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'%238B93A3\'><circle cx=\'12\' cy=\'12\' r=\'10\'/></svg>'" />
+          <span class="card-name">${link.name}</span>
+        </div>
+        <div class="card-domain">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+          <span>${domainOf(link.url)}</span>
+        </div>
+        <span class="card-cat-badge">${link.cat || 'عام'}</span>
+      </a>
+    `).join("");
+
+    // Delete Handlers
+    grid.querySelectorAll("[data-del]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const id = btn.getAttribute("data-del");
+        links = links.filter(l => l.id !== id);
+        saveLinks(links);
+        renderCategories();
+        render();
+      });
+    });
+
+    // Edit Handlers
+    grid.querySelectorAll("[data-edit]").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault(); e.stopPropagation();
+        const id = btn.getAttribute("data-edit");
+        const item = links.find(l => l.id === id);
+        if (item) {
+          document.getElementById("f-id").value = item.id;
+          document.getElementById("f-name").value = item.name;
+          document.getElementById("f-url").value = item.url;
+          document.getElementById("f-cat").value = item.cat || "الكل";
+          document.getElementById("f-submit-btn").textContent = "تحديث الموقع";
+          
+          form.classList.add("open");
+          toggleBtn.classList.add("active");
+          toggleLabel.textContent = "إلغاء التعديل";
+        }
+      });
+    });
+  }
+
+  const desktopInstallBtn = document.getElementById("btn-desktop-install");
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    desktopInstallBtn.style.display = 'inline-flex';
+  });
+
+  desktopInstallBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('App Installed Successfully');
+    }
+    deferredPrompt = null;
+    desktopInstallBtn.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    desktopInstallBtn.style.display = 'none';
+    deferredPrompt = null;
+    document.getElementById('app-mode').textContent = 'تطبيق مثبت (Standalone)';
+  });
+
+  if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone) {
+    document.getElementById('app-mode').textContent = 'تطبيق مثبت (Standalone)';
+  }
+
+  const modal = document.getElementById("install-modal");
+  document.getElementById("btn-help-install").addEventListener("click", () => modal.classList.add("active"));
+  document.getElementById("btn-close-modal").addEventListener("click", () => modal.classList.remove("active"));
+  modal.addEventListener("click", (e) => { if (e.target === modal) modal.classList.remove("active"); });
+
+  // Quick Launch All Links in Active Category
+  document.getElementById("btn-open-launch").addEventListener("click", () => {
+    const filtered = links.filter(l => activeCategory === "الكل" || l.cat === activeCategory);
+    if (filtered.length === 0) return;
+    if (confirm(`هل تريد فتح ${filtered.length} موقع في تبويبات جديدة؟`)) {
+      filtered.forEach(link => window.open(link.url, '_blank'));
+    }
+  });
+
+  // Search Input
+  const searchInput = document.getElementById("search");
+  searchInput.addEventListener("input", (e) => {
+    query = e.target.value;
+    render();
+  });
+
+  // Global Keyboard Shortcuts
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "/" && document.activeElement !== searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+    if (e.altKey && (e.key === "n" || e.key === "N")) {
+      e.preventDefault();
+      toggleBtn.click();
+    }
+  });
+
+  // Form Submission (Add / Edit)
+  const form = document.getElementById("add-form");
+  const toggleBtn = document.getElementById("toggle-form");
+  const toggleLabel = document.getElementById("toggle-label");
+
+  toggleBtn.addEventListener("click", () => {
+    const isOpen = form.classList.contains("open");
+    if (isOpen) {
+      form.classList.remove("open");
+      toggleBtn.classList.remove("active");
+      toggleLabel.textContent = "إضافة موقع";
+      document.getElementById("f-id").value = "";
+      document.getElementById("f-name").value = "";
+      document.getElementById("f-url").value = "";
+      document.getElementById("f-submit-btn").textContent = "حفظ";
+    } else {
+      form.classList.add("open");
+      toggleBtn.classList.add("active");
+      toggleLabel.textContent = "إلغاء";
+      document.getElementById("f-name").focus();
+    }
+    document.getElementById("form-error").style.display = "none";
+  });
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const editId = document.getElementById("f-id").value;
+    const name = document.getElementById("f-name").value.trim();
+    const rawUrl = document.getElementById("f-url").value;
+    const cat = document.getElementById("f-cat").value;
+    const cleanUrl = normalizeUrl(rawUrl);
+    const errorEl = document.getElementById("form-error");
+
+    if (!name || !cleanUrl) {
+      errorEl.textContent = "يرجى كتابة الاسم والرابط بشكل صحيح";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    try { new URL(cleanUrl); }
+    catch {
+      errorEl.textContent = "الرابط غير صالح";
+      errorEl.style.display = "block";
+      return;
+    }
+
+    if (editId) {
+      // Update existing link
+      const idx = links.findIndex(l => l.id === editId);
+      if (idx !== -1) {
+        links[idx] = { id: editId, name, url: cleanUrl, cat };
+      }
+    } else {
+      // Add new link
+      links.push({ id: Date.now().toString(), name, url: cleanUrl, cat });
+    }
+
+    saveLinks(links);
+    toggleBtn.click();
+    renderCategories();
+    render();
+  });
+
+  document.getElementById("btn-export").addEventListener("click", () => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(links, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `lawhati_backup_${new Date().toISOString().slice(0,10)}.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  });
+
+  document.getElementById("import-file").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const importedLinks = JSON.parse(event.target.result);
+        if (Array.isArray(importedLinks)) {
+          links = importedLinks;
+          saveLinks(links);
+          renderCategories();
+          render();
+          alert("تم استعادة النسخة الاحتياطية بنجاح!");
+        }
+      } catch (err) {
+        alert("ملف غير صالح.");
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  // Live Clock
+  function updateClock() {
+    const now = new Date();
+    document.getElementById("clock").textContent = now.toLocaleTimeString("ar-SA", { hour: "2-digit", minute: "2-digit" });
+  }
+  updateClock();
+  setInterval(updateClock, 30000);
+
+  // Initial Boot
+  renderCategories();
+  render();
+</script>
+</body>
+</html>
