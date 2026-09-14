@@ -4,12 +4,12 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>لوحتي - برج التحكم</title>
-<meta name="theme-color" content="#0E1116" />
+<meta name="theme-color" content="#E8A33D" />
 <meta name="description" content="منصتك الشخصية لجميع روابطك وأدواتك المفضلة" />
 
-<link rel="manifest" href="manifest.json" />
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23161B22'/><path d='M256 120L120 196l136 76 136-76-136-76zM120 316l136 76 136-76M120 256l136 76 136-76' stroke='%23E8A33D' stroke-width='32' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23161B22'/><path d='M256 120L120 196l136 76 136-76-136-76zM120 316l136 76 136-76M120 256l136 76 136-76' stroke='%23E8A33D' stroke-width='32' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
+<!-- أيقونة أصلية باللون الأصفر المشرق -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23E8A33D'/><path d='M256 120L120 196l136 76 136-76-136-76zM120 316l136 76 136-76M120 256l136 76 136-76' stroke='%23161B22' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='128' fill='%23E8A33D'/><path d='M256 120L120 196l136 76 136-76-136-76zM120 316l136 76 136-76M120 256l136 76 136-76' stroke='%23161B22' stroke-width='36' stroke-linecap='round' stroke-linejoin='round' fill='none'/></svg>" />
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -38,8 +38,8 @@
     --border-strong: #CBD5E1;
     --text: #0F172A;
     --muted: #64748B;
-    --accent: #D97706;
-    --accent-hover: #B45309;
+    --accent: #E8A33D;
+    --accent-hover: #D97706;
     --accent2: #0D9488;
     --danger: #EF4444;
     --input-bg: #F8FAFC;
@@ -61,11 +61,11 @@
   .top-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
   .brand { display:flex; align-items:center; gap:10px; color: var(--muted); font-size:13px; font-weight: 500; }
   .brand-badge {
-    background: rgba(63, 167, 150, 0.15); color: var(--accent2);
+    background: rgba(232, 163, 61, 0.15); color: var(--accent);
     padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: bold;
     display: inline-flex; align-items: center; gap: 4px;
   }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
 
   .theme-toggle {
     background: var(--panel); border: 1px solid var(--border); color: var(--text);
@@ -143,49 +143,54 @@
   .form-error { width:100%; color: var(--danger); font-size:13px; }
 
   .grid {
-    display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap:14px;
+    display:grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap:16px;
   }
   .empty {
     grid-column: 1 / -1; border:2px dashed var(--border); border-radius:14px; padding:50px 20px;
     text-align:center; color:var(--muted); font-size:15px;
   }
 
-  /* --- التنسيق المطور للبطاقات يمنع تداخل العناصر نهائياً --- */
+  /* --- التصميم الجديد المطور يمنع أي تداخل نهائياً --- */
   .card {
-    display: flex; flex-direction: column; justify-content: space-between;
-    background: var(--panel); border: 1px solid var(--border); border-right: 4px solid var(--accent2);
+    display: flex; flex-direction: column;
+    background: var(--panel); border: 1px solid var(--border); border-right: 4px solid var(--accent);
     border-radius: 12px; padding: 14px; text-decoration: none; color: var(--text);
-    transition: all 0.2s ease; box-shadow: 0 2px 4px var(--card-shadow); min-height: 110px;
+    transition: all 0.2s ease; box-shadow: 0 2px 4px var(--card-shadow);
+    position: relative;
   }
   .card:hover { border-color: var(--border-strong); background-color: var(--panel-hover); transform: translateY(-2px); }
   
-  .card-header-row {
-    display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 12px;
+  .card-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-bottom: 12px;
   }
-  .card-head { display: flex; align-items: center; gap: 8px; overflow: hidden; flex: 1; }
-  .card-head img { border-radius: 6px; flex-shrink: 0; background: var(--base); padding: 2px; }
+  .card-title-wrap { display: flex; align-items: center; gap: 10px; overflow: hidden; flex: 1; }
+  .card-icon { width: 22px; height: 22px; border-radius: 4px; flex-shrink: 0; background: var(--base); }
   .card-name { font-size: 15px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-  .card-actions {
-    display: flex; gap: 4px; flex-shrink: 0;
-  }
+  .card-actions { display: flex; gap: 4px; flex-shrink: 0; }
   .act-btn {
     background: var(--base); border: 1px solid var(--border); border-radius: 6px;
-    width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; color: var(--muted);
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--muted);
+    cursor: pointer;
   }
   .act-btn:hover { color: var(--text); border-color: var(--border-strong); }
   .act-btn.del:hover { color: var(--danger); }
 
   .card-bottom {
-    display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: auto; font-size: 12px; color: var(--muted);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border);
   }
-  .card-domain { display: flex; align-items: center; gap: 4px; direction: ltr; overflow: hidden; max-width: 65%; }
+  .card-domain {
+    display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted);
+    direction: ltr; overflow: hidden; max-width: 60%;
+  }
   .card-domain span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   .card-tag {
-    font-size: 11px; padding: 2px 8px; border-radius: 4px;
-    background: rgba(139, 147, 163, 0.12); color: var(--muted);
-    white-space: nowrap; flex-shrink: 0;
+    font-size: 11px; padding: 2px 8px; border-radius: 6px;
+    background: rgba(232, 163, 61, 0.12); color: var(--accent);
+    white-space: nowrap; font-weight: 600;
   }
 
   .footer { margin-top:40px; font-size:13px; color:var(--muted); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; border-top:1px solid var(--border); padding-top:20px; }
@@ -316,7 +321,13 @@
   </div>
 
 <script>
+  // تحديث تلقائي لتفريغ الـ Cache القديم
   if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(registrations => {
+      for (let registration of registrations) {
+        registration.update();
+      }
+    });
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
     });
@@ -449,9 +460,9 @@
 
     grid.innerHTML = filtered.map(link => `
       <a class="card" href="${link.url}" target="_blank" rel="noopener noreferrer" data-id="${link.id}">
-        <div class="card-header-row">
-          <div class="card-head">
-            <img src="https://www.google.com/s2/favicons?domain=${domainOf(link.url)}&sz=64" width="22" height="22" alt="" />
+        <div class="card-top">
+          <div class="card-title-wrap">
+            <img class="card-icon" src="https://www.google.com/s2/favicons?domain=${domainOf(link.url)}&sz=64" alt="" />
             <span class="card-name">${link.name}</span>
           </div>
           <div class="card-actions">
